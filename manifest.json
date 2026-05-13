@@ -1,0 +1,30 @@
+{
+  "name": "Realtime GPS Tracker",
+  "version": "1.0.0",
+  "home_assistant_domain": "esphome",
+  "funding_url": "https://github.com/",
+  "new_install_prompt_erase": true,
+  "builds": [
+    {
+      "chipFamily": "ESP32-C3",
+      "parts": [
+        {
+          "path": "./firmware/2GTracker.ino.bootloader.bin",
+          "offset": "0x0"
+        },
+        {
+          "path": "./firmware/2GTracker.ino.partitions.bin",
+          "offset": "0x8000"
+        },
+        {
+          "path": "./firmware/boot_app0.bin",
+          "offset": "0xe000"
+        },
+        {
+          "path": "./firmware/2GTracker.ino.bin",
+          "offset": "0x10000"
+        }
+      ]
+    }
+  ]
+}
