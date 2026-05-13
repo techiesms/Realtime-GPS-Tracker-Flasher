@@ -1,364 +1,379 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Realtime GPS Tracker Firmware Installer</title>
+  <title>Realtime GPS Tracker Flasher</title>
 
-  <script
-    type="module"
-    src="https://unpkg.com/esp-web-tools@9/dist/web/install-button.js?module">
-  </script>
+  <script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
-
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    :root{
-      --bg:#050816;
-      --card:#0d1328cc;
-      --border:rgba(255,255,255,0.08);
-      --text:#ffffff;
-      --muted:#9ca3af;
-      --primary:#00d4ff;
-      --secondary:#7c3aed;
-      --success:#00ff99;
+    :root {
+      --bg: #050816;
+      --card: rgba(255,255,255,0.06);
+      --border: rgba(255,255,255,0.08);
+      --text: #ffffff;
+      --muted: #9ca3af;
+
+      --primary1: #00f5ff;
+      --primary2: #7c3aed;
+      --primary3: #00ff95;
+
+      --shadow:
+        0 0 20px rgba(0,245,255,0.25),
+        0 0 60px rgba(124,58,237,0.2);
+
+      --glass:
+        rgba(255,255,255,0.05);
     }
 
-    body{
-      font-family:'Inter',sans-serif;
-      background:
-      radial-gradient(circle at top left,#172554 0%,transparent 30%),
-      radial-gradient(circle at bottom right,#4c1d95 0%,transparent 30%),
-      linear-gradient(135deg,#020617,#0f172a,#020617);
-      color:white;
-      min-height:100vh;
-      overflow-x:hidden;
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: white;
+      overflow-x: hidden;
+      min-height: 100vh;
+      position: relative;
     }
 
-    body::before{
-      content:'';
-      position:fixed;
-      width:100%;
-      height:100%;
-      background:
-      linear-gradient(
-      120deg,
-      transparent,
-      rgba(255,255,255,0.03),
-      transparent
-      );
-      animation: shine 8s linear infinite;
-      pointer-events:none;
+    body::before {
+      content: '';
+      position: fixed;
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(0,245,255,0.15), transparent 70%);
+      top: -200px;
+      left: -200px;
+      z-index: -1;
+      animation: float1 10s infinite alternate ease-in-out;
     }
 
-    @keyframes shine{
-      0%{
-        transform:translateX(-100%);
-      }
-      100%{
-        transform:translateX(100%);
-      }
+    body::after {
+      content: '';
+      position: fixed;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(124,58,237,0.18), transparent 70%);
+      bottom: -200px;
+      right: -200px;
+      z-index: -1;
+      animation: float2 12s infinite alternate ease-in-out;
     }
 
-    .container{
-      width:100%;
-      max-width:1200px;
-      margin:auto;
-      padding:40px 20px 80px;
+    @keyframes float1 {
+      from { transform: translateY(0px); }
+      to { transform: translateY(80px); }
     }
 
-    .hero{
-      text-align:center;
-      padding:80px 20px 40px;
+    @keyframes float2 {
+      from { transform: translateY(0px); }
+      to { transform: translateY(-80px); }
     }
 
-    .badge{
-      display:inline-block;
-      padding:10px 18px;
-      border-radius:999px;
-      background:rgba(255,255,255,0.08);
-      border:1px solid rgba(255,255,255,0.08);
-      backdrop-filter:blur(12px);
-      color:#93c5fd;
-      font-size:14px;
-      margin-bottom:24px;
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: auto;
+      padding: 40px 20px;
     }
 
-    h1{
-      font-size:clamp(42px,8vw,78px);
-      font-weight:800;
-      line-height:1;
-      margin-bottom:24px;
-      background:linear-gradient(
-      90deg,
-      #ffffff,
-      #00d4ff,
-      #7c3aed
-      );
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
+    .hero {
+      text-align: center;
+      padding-top: 60px;
+      padding-bottom: 40px;
     }
 
-    .subtitle{
-      max-width:800px;
-      margin:auto;
-      font-size:20px;
-      line-height:1.8;
-      color:#cbd5e1;
+    .badge {
+      display: inline-block;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #d1d5db;
+      margin-bottom: 30px;
+      backdrop-filter: blur(20px);
     }
 
-    .glass-card{
-      background:rgba(15,23,42,0.55);
-      border:1px solid rgba(255,255,255,0.08);
-      backdrop-filter:blur(18px);
-      border-radius:32px;
-      padding:40px;
-      margin-top:40px;
-      box-shadow:
-      0 0 40px rgba(0,212,255,0.08),
-      0 0 80px rgba(124,58,237,0.08);
+    h1 {
+      font-size: 64px;
+      font-weight: 900;
+      line-height: 1.05;
+      margin-bottom: 20px;
+
+      background: linear-gradient(90deg, #00f5ff, #7c3aed, #00ff95);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    .install-section{
-      position:relative;
-      overflow:hidden;
-      text-align:center;
+    .subtitle {
+      max-width: 800px;
+      margin: auto;
+      color: #cbd5e1;
+      font-size: 20px;
+      line-height: 1.7;
     }
 
-    .install-section::before{
-      content:'';
-      position:absolute;
-      inset:-2px;
-      background:
-      linear-gradient(
-      90deg,
-      #00d4ff,
-      #7c3aed,
-      #00ffcc,
-      #00d4ff
-      );
-      background-size:300% 300%;
-      animation:borderGlow 6s ease infinite;
-      filter:blur(18px);
-      opacity:0.7;
-      z-index:-1;
+    .install-wrapper {
+      margin-top: 70px;
+      display: flex;
+      justify-content: center;
     }
 
-    @keyframes borderGlow{
-      0%{background-position:0% 50%;}
-      50%{background-position:100% 50%;}
-      100%{background-position:0% 50%;}
-    }
+    .install-card {
+      position: relative;
+      width: 100%;
+      max-width: 650px;
+      padding: 50px;
+      border-radius: 35px;
 
-    .install-title{
-      font-size:38px;
-      font-weight:800;
-      margin-bottom:16px;
-    }
+      background: rgba(255,255,255,0.05);
 
-    .install-subtitle{
-      color:#94a3b8;
-      font-size:18px;
-      margin-bottom:40px;
-    }
+      backdrop-filter: blur(25px);
 
-    .button-wrapper{
-      position:relative;
-      display:inline-block;
-    }
-
-    .button-wrapper::before{
-      content:'';
-      position:absolute;
-      inset:-8px;
-      border-radius:999px;
-      background:
-      linear-gradient(
-      90deg,
-      #00d4ff,
-      #7c3aed,
-      #00ffcc
-      );
-      filter:blur(30px);
-      opacity:0.7;
-      animation:pulseGlow 3s infinite alternate;
-      z-index:0;
-    }
-
-    @keyframes pulseGlow{
-      from{
-        transform:scale(0.95);
-        opacity:0.6;
-      }
-      to{
-        transform:scale(1.05);
-        opacity:1;
-      }
-    }
-
-    esp-web-install-button::part(button){
-      position:relative;
-      z-index:2;
-      border:none;
-      outline:none;
-      cursor:pointer;
-
-      padding:24px 60px;
-
-      border-radius:999px;
-
-      font-size:22px;
-      font-weight:700;
-      letter-spacing:0.5px;
-
-      color:white;
-
-      background:
-      linear-gradient(
-      135deg,
-      #00d4ff,
-      #7c3aed,
-      #00ffcc
-      );
-
-      background-size:300% 300%;
-
-      animation:gradientMove 6s ease infinite;
-
-      transition:all 0.35s ease;
+      border: 1px solid rgba(255,255,255,0.08);
 
       box-shadow:
-      0 0 30px rgba(0,212,255,0.5),
-      0 0 60px rgba(124,58,237,0.35);
+        0 0 30px rgba(0,245,255,0.15),
+        0 0 80px rgba(124,58,237,0.18);
 
-      min-width:340px;
-
-      text-transform:uppercase;
+      overflow: hidden;
     }
 
-    @keyframes gradientMove{
-      0%{background-position:0% 50%;}
-      50%{background-position:100% 50%;}
-      100%{background-position:0% 50%;}
+    .install-card::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+
+      background: linear-gradient(
+        135deg,
+        #00f5ff,
+        #7c3aed,
+        #00ff95,
+        #00f5ff
+      );
+
+      background-size: 300% 300%;
+
+      border-radius: 35px;
+
+      z-index: -1;
+
+      animation: borderFlow 8s linear infinite;
     }
 
-    esp-web-install-button::part(button):hover{
-      transform:translateY(-5px) scale(1.03);
+    @keyframes borderFlow {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 300% 50%; }
+    }
+
+    .install-title {
+      font-size: 38px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .install-subtitle {
+      color: #cbd5e1;
+      margin-bottom: 40px;
+      line-height: 1.8;
+      font-size: 17px;
+    }
+
+    .button-shell {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+
+    esp-web-install-button::part(button) {
+      width: 100%;
+      border: none;
+      outline: none;
+      cursor: pointer;
+
+      padding: 24px 36px;
+
+      border-radius: 999px;
+
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+
+      color: white;
+
+      background:
+        linear-gradient(
+          135deg,
+          #00f5ff,
+          #7c3aed,
+          #00ff95
+        );
+
+      background-size: 300% 300%;
+
+      animation: gradientMove 5s ease infinite;
 
       box-shadow:
-      0 0 50px rgba(0,212,255,0.8),
-      0 0 90px rgba(124,58,237,0.6);
+        0 0 20px rgba(0,245,255,0.4),
+        0 0 50px rgba(124,58,237,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.2);
+
+      transition:
+        transform 0.35s ease,
+        box-shadow 0.35s ease,
+        filter 0.35s ease;
+
+      position: relative;
+
+      overflow: hidden;
     }
 
-    esp-web-install-button::part(button):active{
-      transform:scale(0.98);
+    esp-web-install-button::part(button):hover {
+      transform: translateY(-5px) scale(1.02);
+
+      box-shadow:
+        0 0 30px rgba(0,245,255,0.65),
+        0 0 90px rgba(124,58,237,0.5);
+
+      filter: brightness(1.08);
     }
 
-    .info-grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-      gap:24px;
-      margin-top:40px;
+    esp-web-install-button::part(button)::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 80%;
+      height: 100%;
+      background: rgba(255,255,255,0.22);
+      transform: skewX(-25deg);
+      transition: 0.7s;
     }
 
-    .info-card{
-      background:rgba(255,255,255,0.04);
-      border:1px solid rgba(255,255,255,0.08);
-      border-radius:24px;
-      padding:28px;
-      transition:0.3s;
+    esp-web-install-button::part(button):hover::before {
+      left: 130%;
     }
 
-    .info-card:hover{
-      transform:translateY(-6px);
-      border-color:rgba(0,212,255,0.4);
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
-    .info-card h3{
-      margin-bottom:14px;
-      font-size:22px;
+    .grid {
+      margin-top: 70px;
+
+      display: grid;
+
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+
+      gap: 25px;
     }
 
-    .info-card p,
-    .info-card li{
-      color:#cbd5e1;
-      line-height:1.8;
+    .card {
+      background: rgba(255,255,255,0.05);
+
+      border: 1px solid rgba(255,255,255,0.08);
+
+      border-radius: 28px;
+
+      padding: 30px;
+
+      backdrop-filter: blur(15px);
+
+      transition: 0.35s ease;
     }
 
-    .steps{
-      margin-top:20px;
-      padding-left:20px;
+    .card:hover {
+      transform: translateY(-6px);
+
+      box-shadow:
+        0 0 20px rgba(0,245,255,0.15),
+        0 0 50px rgba(124,58,237,0.15);
     }
 
-    .steps li{
-      margin-bottom:10px;
+    .card h3 {
+      margin-bottom: 18px;
+      font-size: 22px;
     }
 
-    .tutorial-btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      margin-top:24px;
-      padding:16px 30px;
-      border-radius:999px;
-      text-decoration:none;
-      color:white;
-      font-weight:600;
-      background:rgba(255,255,255,0.06);
-      border:1px solid rgba(255,255,255,0.1);
-      backdrop-filter:blur(10px);
-      transition:0.3s;
+    .card p,
+    .card li {
+      color: #cbd5e1;
+      line-height: 1.8;
     }
 
-    .tutorial-btn:hover{
-      transform:translateY(-4px);
-      background:rgba(255,255,255,0.1);
-      box-shadow:0 0 30px rgba(0,212,255,0.25);
+    ul {
+      padding-left: 20px;
     }
 
-    footer{
-      margin-top:70px;
-      text-align:center;
-      color:#64748b;
-      font-size:15px;
+    .tutorial-btn {
+      margin-top: 22px;
+      display: inline-block;
+      text-decoration: none;
+      color: white;
+
+      background:
+        linear-gradient(
+          135deg,
+          #7c3aed,
+          #00f5ff
+        );
+
+      padding: 16px 28px;
+
+      border-radius: 999px;
+
+      font-weight: 700;
+
+      transition: 0.3s ease;
     }
 
-    .warning{
-      border-left:4px solid #f59e0b;
+    .tutorial-btn:hover {
+      transform: scale(1.05);
     }
 
-    @media(max-width:768px){
+    footer {
+      margin-top: 80px;
+      text-align: center;
+      color: #94a3b8;
+      padding-bottom: 40px;
+    }
 
-      .glass-card{
-        padding:28px;
+    @media(max-width: 768px) {
+
+      h1 {
+        font-size: 42px;
       }
 
-      esp-web-install-button::part(button){
-        width:100%;
-        min-width:unset;
-        font-size:18px;
-        padding:22px 24px;
+      .subtitle {
+        font-size: 17px;
       }
 
-      .install-title{
-        font-size:30px;
+      .install-card {
+        padding: 30px;
       }
 
-      .subtitle{
-        font-size:18px;
+      .install-title {
+        font-size: 30px;
+      }
+
+      esp-web-install-button::part(button) {
+        font-size: 18px;
+        padding: 20px;
       }
 
     }
-
   </style>
 </head>
 
@@ -369,97 +384,101 @@
     <section class="hero">
 
       <div class="badge">
-        TECHIESMS • Browser Based Firmware Installer
+        TECHIESMS • ESP32-C3 Firmware Installer
       </div>
 
-      <h1>Realtime GPS Tracker</h1>
+      <h1>
+        Realtime GPS Tracker
+      </h1>
 
       <p class="subtitle">
-        Flash firmware directly from your browser to the XIAO ESP32-C3 without installing any desktop software.
-        Modern. Fast. Professional.
+        Flash your XIAO ESP32-C3 firmware directly from your browser.
+        No drivers, no desktop apps, no command line tools.
+        Fast. Modern. Professional.
       </p>
 
-    </section>
+      <div class="install-wrapper">
 
-    <section class="glass-card install-section">
+        <div class="install-card">
 
-      <h2 class="install-title">
-        Install Firmware
-      </h2>
+          <div class="install-title">
+            Install Firmware
+          </div>
 
-      <p class="install-subtitle">
-        Connect your board using USB and start flashing instantly.
-      </p>
+          <div class="install-subtitle">
+            Connect your XIAO ESP32-C3 board using USB and click below to start firmware installation.
+          </div>
 
-      <div class="button-wrapper">
+          <div class="button-shell">
 
-        <esp-web-install-button manifest="manifest.json">
+            <esp-web-install-button manifest="manifest.json">
+              <button slot="activate">
+                ✨ Flash Firmware
+              </button>
+            </esp-web-install-button>
 
-          <button slot="activate">
-            Flash Firmware
-          </button>
+          </div>
 
-        </esp-web-install-button>
+        </div>
 
       </div>
 
-      <a
-      href="https://youtu.be/ENxouRuxUlE"
-      target="_blank"
-      class="tutorial-btn">
-      Watch Full Tutorial
-      </a>
-
     </section>
 
-    <div class="info-grid">
+    <section class="grid">
 
-      <div class="info-card">
+      <div class="card">
         <h3>Supported Hardware</h3>
 
         <p>
           Board: XIAO ESP32-C3
-        </p>
-
-        <p>
+          <br><br>
           Chip Family: ESP32-C3
-        </p>
-
-        <p>
-          Browser Support:
-          Chrome & Edge
         </p>
       </div>
 
-      <div class="info-card">
+      <div class="card">
         <h3>Installation Steps</h3>
 
-        <ol class="steps">
+        <ul>
           <li>Connect ESP board using USB</li>
           <li>Open Chrome or Edge browser</li>
           <li>Click Flash Firmware</li>
-          <li>Select serial port</li>
-          <li>Wait for flashing to complete</li>
-          <li>Device will reboot automatically</li>
-        </ol>
-      </div>
-
-      <div class="info-card warning">
-        <h3>Troubleshooting</h3>
-
-        <ul class="steps">
-          <li>Use data USB cable</li>
-          <li>Close Arduino Serial Monitor</li>
-          <li>Install USB drivers if needed</li>
-          <li>Try another USB port</li>
-          <li>Hold BOOT button while connecting</li>
+          <li>Select serial COM port</li>
+          <li>Wait for installation completion</li>
         </ul>
       </div>
 
-    </div>
+      <div class="card">
+        <h3>Tutorial Video</h3>
+
+        <p>
+          Watch the complete flashing tutorial guide.
+        </p>
+
+        <a class="tutorial-btn"
+           href="https://youtu.be/ENxouRuxUlE"
+           target="_blank">
+          ▶ Watch Tutorial
+        </a>
+      </div>
+
+      <div class="card">
+        <h3>Troubleshooting</h3>
+
+        <ul>
+          <li>Use a data USB cable</li>
+          <li>Close Serial Monitor before flashing</li>
+          <li>Try another USB port</li>
+          <li>Hold BOOT while connecting if needed</li>
+          <li>Install USB drivers if board is not detected</li>
+        </ul>
+      </div>
+
+    </section>
 
     <footer>
-      © 2026 TECHIESMS • Realtime GPS Tracker Firmware Installer
+      © 2026 TECHIESMS • Realtime GPS Tracker Firmware Portal
     </footer>
 
   </div>
