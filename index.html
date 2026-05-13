@@ -1,378 +1,211 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
 
   <title>Realtime GPS Tracker Flasher</title>
 
-  <script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
-
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script
+    type="module"
+    src="https://unpkg.com/esp-web-tools@9/dist/web/install-button.js?module"
+  ></script>
 
   <style>
+    :root {
+      --bg: #0f1117;
+      --card: #171a21;
+      --card-border: #242938;
+      --text: #f3f4f6;
+      --muted: #9aa4b2;
+      --primary1: #2563eb;
+      --primary2: #3b82f6;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --shadow: rgba(0, 0, 0, 0.28);
+    }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
-    :root {
-      --bg: #050816;
-      --card: rgba(255,255,255,0.06);
-      --border: rgba(255,255,255,0.08);
-      --text: #ffffff;
-      --muted: #9ca3af;
-
-      --primary1: #00f5ff;
-      --primary2: #7c3aed;
-      --primary3: #00ff95;
-
-      --shadow:
-        0 0 20px rgba(0,245,255,0.25),
-        0 0 60px rgba(124,58,237,0.2);
-
-      --glass:
-        rgba(255,255,255,0.05);
-    }
-
     body {
-      font-family: 'Inter', sans-serif;
       background: var(--bg);
-      color: white;
-      overflow-x: hidden;
-      min-height: 100vh;
-      position: relative;
-    }
-
-    body::before {
-      content: '';
-      position: fixed;
-      width: 800px;
-      height: 800px;
-      background: radial-gradient(circle, rgba(0,245,255,0.15), transparent 70%);
-      top: -200px;
-      left: -200px;
-      z-index: -1;
-      animation: float1 10s infinite alternate ease-in-out;
-    }
-
-    body::after {
-      content: '';
-      position: fixed;
-      width: 700px;
-      height: 700px;
-      background: radial-gradient(circle, rgba(124,58,237,0.18), transparent 70%);
-      bottom: -200px;
-      right: -200px;
-      z-index: -1;
-      animation: float2 12s infinite alternate ease-in-out;
-    }
-
-    @keyframes float1 {
-      from { transform: translateY(0px); }
-      to { transform: translateY(80px); }
-    }
-
-    @keyframes float2 {
-      from { transform: translateY(0px); }
-      to { transform: translateY(-80px); }
+      color: var(--text);
+      font-family: Inter, system-ui, sans-serif;
+      line-height: 1.6;
+      padding: 24px;
     }
 
     .container {
-      width: 100%;
-      max-width: 1200px;
+      max-width: 980px;
       margin: auto;
-      padding: 40px 20px;
     }
 
     .hero {
       text-align: center;
-      padding-top: 60px;
-      padding-bottom: 40px;
+      padding: 48px 20px;
     }
 
-    .badge {
-      display: inline-block;
-      padding: 10px 18px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.08);
-      color: #d1d5db;
-      margin-bottom: 30px;
-      backdrop-filter: blur(20px);
+    .hero h1 {
+      font-size: 2.7rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      letter-spacing: -1px;
     }
 
-    h1 {
-      font-size: 64px;
-      font-weight: 900;
-      line-height: 1.05;
-      margin-bottom: 20px;
-
-      background: linear-gradient(90deg, #00f5ff, #7c3aed, #00ff95);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .subtitle {
-      max-width: 800px;
+    .hero p {
+      color: var(--muted);
+      max-width: 700px;
       margin: auto;
-      color: #cbd5e1;
-      font-size: 20px;
-      line-height: 1.7;
-    }
-
-    .install-wrapper {
-      margin-top: 70px;
-      display: flex;
-      justify-content: center;
-    }
-
-    .install-card {
-      position: relative;
-      width: 100%;
-      max-width: 650px;
-      padding: 50px;
-      border-radius: 35px;
-
-      background: rgba(255,255,255,0.05);
-
-      backdrop-filter: blur(25px);
-
-      border: 1px solid rgba(255,255,255,0.08);
-
-      box-shadow:
-        0 0 30px rgba(0,245,255,0.15),
-        0 0 80px rgba(124,58,237,0.18);
-
-      overflow: hidden;
-    }
-
-    .install-card::before {
-      content: '';
-      position: absolute;
-      inset: -2px;
-
-      background: linear-gradient(
-        135deg,
-        #00f5ff,
-        #7c3aed,
-        #00ff95,
-        #00f5ff
-      );
-
-      background-size: 300% 300%;
-
-      border-radius: 35px;
-
-      z-index: -1;
-
-      animation: borderFlow 8s linear infinite;
-    }
-
-    @keyframes borderFlow {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 300% 50%; }
-    }
-
-    .install-title {
-      font-size: 38px;
-      font-weight: 800;
-      margin-bottom: 12px;
-    }
-
-    .install-subtitle {
-      color: #cbd5e1;
-      margin-bottom: 40px;
-      line-height: 1.8;
-      font-size: 17px;
-    }
-
-    .button-shell {
-      position: relative;
-      display: inline-block;
-      width: 100%;
-    }
-
-    esp-web-install-button::part(button) {
-      width: 100%;
-      border: none;
-      outline: none;
-      cursor: pointer;
-
-      padding: 24px 36px;
-
-      border-radius: 999px;
-
-      font-size: 22px;
-      font-weight: 800;
-      letter-spacing: 0.5px;
-
-      color: white;
-
-      background:
-        linear-gradient(
-          135deg,
-          #00f5ff,
-          #7c3aed,
-          #00ff95
-        );
-
-      background-size: 300% 300%;
-
-      animation: gradientMove 5s ease infinite;
-
-      box-shadow:
-        0 0 20px rgba(0,245,255,0.4),
-        0 0 50px rgba(124,58,237,0.35),
-        inset 0 1px 0 rgba(255,255,255,0.2);
-
-      transition:
-        transform 0.35s ease,
-        box-shadow 0.35s ease,
-        filter 0.35s ease;
-
-      position: relative;
-
-      overflow: hidden;
-    }
-
-    esp-web-install-button::part(button):hover {
-      transform: translateY(-5px) scale(1.02);
-
-      box-shadow:
-        0 0 30px rgba(0,245,255,0.65),
-        0 0 90px rgba(124,58,237,0.5);
-
-      filter: brightness(1.08);
-    }
-
-    esp-web-install-button::part(button)::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 80%;
-      height: 100%;
-      background: rgba(255,255,255,0.22);
-      transform: skewX(-25deg);
-      transition: 0.7s;
-    }
-
-    esp-web-install-button::part(button):hover::before {
-      left: 130%;
-    }
-
-    @keyframes gradientMove {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    .grid {
-      margin-top: 70px;
-
-      display: grid;
-
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-
-      gap: 25px;
+      font-size: 1.05rem;
     }
 
     .card {
-      background: rgba(255,255,255,0.05);
-
-      border: 1px solid rgba(255,255,255,0.08);
-
-      border-radius: 28px;
-
-      padding: 30px;
-
-      backdrop-filter: blur(15px);
-
-      transition: 0.35s ease;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 26px;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 24px var(--shadow);
     }
 
-    .card:hover {
-      transform: translateY(-6px);
-
-      box-shadow:
-        0 0 20px rgba(0,245,255,0.15),
-        0 0 50px rgba(124,58,237,0.15);
-    }
-
-    .card h3 {
-      margin-bottom: 18px;
-      font-size: 22px;
+    .card h2 {
+      margin-bottom: 16px;
+      font-size: 1.35rem;
     }
 
     .card p,
     .card li {
-      color: #cbd5e1;
-      line-height: 1.8;
+      color: var(--muted);
     }
 
-    ul {
-      padding-left: 20px;
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .info-box {
+      background: #12151c;
+      border: 1px solid #222838;
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .info-box span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+    }
+
+    .info-box strong {
+      font-size: 1rem;
+    }
+
+    .flash-section {
+      text-align: center;
+      padding: 30px 20px;
+    }
+
+    /* REAL ESP WEB TOOLS BUTTON STYLING */
+    esp-web-install-button::part(button) {
+      background: linear-gradient(
+        135deg,
+        var(--primary1),
+        var(--primary2)
+      );
+      color: white;
+      border: none;
+      border-radius: 14px;
+      padding: 16px 28px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.28);
+      min-width: 240px;
+    }
+
+    esp-web-install-button::part(button):hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(37, 99, 235, 0.34);
+    }
+
+    esp-web-install-button::part(button):active {
+      transform: translateY(0px);
     }
 
     .tutorial-btn {
-      margin-top: 22px;
       display: inline-block;
+      margin-top: 16px;
+      padding: 12px 20px;
+      border-radius: 12px;
       text-decoration: none;
       color: white;
-
-      background:
-        linear-gradient(
-          135deg,
-          #7c3aed,
-          #00f5ff
-        );
-
-      padding: 16px 28px;
-
-      border-radius: 999px;
-
-      font-weight: 700;
-
-      transition: 0.3s ease;
+      background: #242938;
+      border: 1px solid #31384b;
+      transition: background 0.2s ease;
     }
 
     .tutorial-btn:hover {
-      transform: scale(1.05);
+      background: #31384b;
+    }
+
+    ul {
+      padding-left: 18px;
+    }
+
+    li {
+      margin-bottom: 10px;
+    }
+
+    .warning {
+      border-left: 4px solid var(--warning);
+    }
+
+    .danger {
+      border-left: 4px solid var(--danger);
     }
 
     footer {
-      margin-top: 80px;
       text-align: center;
-      color: #94a3b8;
-      padding-bottom: 40px;
+      color: #7b8794;
+      padding: 28px 10px;
+      font-size: 0.95rem;
     }
 
-    @media(max-width: 768px) {
+    code {
+      background: #11151d;
+      padding: 2px 6px;
+      border-radius: 6px;
+      color: #93c5fd;
+    }
 
-      h1 {
-        font-size: 42px;
+    @media (max-width: 768px) {
+      body {
+        padding: 16px;
       }
 
-      .subtitle {
-        font-size: 17px;
+      .hero h1 {
+        font-size: 2rem;
       }
 
-      .install-card {
-        padding: 30px;
-      }
-
-      .install-title {
-        font-size: 30px;
-      }
-
-      esp-web-install-button::part(button) {
-        font-size: 18px;
+      .card {
         padding: 20px;
       }
 
+      esp-web-install-button::part(button) {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -382,103 +215,138 @@
   <div class="container">
 
     <section class="hero">
+      <h1>Realtime GPS Tracker</h1>
 
-      <div class="badge">
-        TECHIESMS • ESP32-C3 Firmware Installer
-      </div>
-
-      <h1>
-        Realtime GPS Tracker
-      </h1>
-
-      <p class="subtitle">
-        Flash your XIAO ESP32-C3 firmware directly from your browser.
-        No drivers, no desktop apps, no command line tools.
-        Fast. Modern. Professional.
+      <p>
+        Browser-based firmware installer for the XIAO ESP32-C3.
+        Flash firmware directly from Chrome or Edge without
+        installing additional desktop software.
       </p>
+    </section>
 
-      <div class="install-wrapper">
+    <section class="card">
+      <h2>Device Information</h2>
 
-        <div class="install-card">
+      <div class="info-grid">
 
-          <div class="install-title">
-            Install Firmware
-          </div>
+        <div class="info-box">
+          <span>Project</span>
+          <strong>Realtime GPS Tracker</strong>
+        </div>
 
-          <div class="install-subtitle">
-            Connect your XIAO ESP32-C3 board using USB and click below to start firmware installation.
-          </div>
+        <div class="info-box">
+          <span>Board</span>
+          <strong>XIAO ESP32-C3</strong>
+        </div>
 
-          <div class="button-shell">
+        <div class="info-box">
+          <span>Chip Family</span>
+          <strong>ESP32-C3</strong>
+        </div>
 
-            <esp-web-install-button manifest="manifest.json">
-              <button slot="activate">
-                ✨ Flash Firmware
-              </button>
-            </esp-web-install-button>
-
-          </div>
-
+        <div class="info-box">
+          <span>Creator</span>
+          <strong>techiesms</strong>
         </div>
 
       </div>
+    </section>
+
+    <section class="card flash-section">
+      <h2>Install Firmware</h2>
+
+      <p style="margin-bottom: 24px;">
+        Connect your board using a USB cable and click below.
+      </p>
+
+      <!-- REAL WORKING ESP WEB TOOLS BUTTON -->
+      <esp-web-install-button manifest="manifest.json">
+      </esp-web-install-button>
+
+      <br />
+
+      <a
+        class="tutorial-btn"
+        href="https://youtu.be/ENxouRuxUlE"
+        target="_blank"
+      >
+        Watch Tutorial Video
+      </a>
 
     </section>
 
-    <section class="grid">
+    <section class="card">
+      <h2>Installation Steps</h2>
 
-      <div class="card">
-        <h3>Supported Hardware</h3>
+      <ul>
+        <li>Use Chrome or Microsoft Edge browser.</li>
+        <li>Connect the XIAO ESP32-C3 using a USB data cable.</li>
+        <li>Click the Flash Firmware button.</li>
+        <li>Select the correct serial port.</li>
+        <li>Wait for flashing to complete.</li>
+        <li>The board will reboot automatically.</li>
+      </ul>
+    </section>
 
-        <p>
-          Board: XIAO ESP32-C3
-          <br><br>
-          Chip Family: ESP32-C3
-        </p>
-      </div>
+    <section class="card warning">
+      <h2>Important Notes</h2>
 
-      <div class="card">
-        <h3>Installation Steps</h3>
+      <ul>
+        <li>Some USB cables are power-only and will not work.</li>
+        <li>Close Arduino IDE or Serial Monitor before flashing.</li>
+        <li>Use a stable USB port directly on your computer.</li>
+        <li>If connection fails, manually enter bootloader mode.</li>
+      </ul>
+    </section>
 
-        <ul>
-          <li>Connect ESP board using USB</li>
-          <li>Open Chrome or Edge browser</li>
-          <li>Click Flash Firmware</li>
-          <li>Select serial COM port</li>
-          <li>Wait for installation completion</li>
-        </ul>
-      </div>
+    <section class="card danger">
+      <h2>Troubleshooting</h2>
 
-      <div class="card">
-        <h3>Tutorial Video</h3>
+      <ul>
+        <li>
+          <strong>Board not detected:</strong>
+          Install USB serial drivers and reconnect device.
+        </li>
 
-        <p>
-          Watch the complete flashing tutorial guide.
-        </p>
+        <li>
+          <strong>Failed to connect:</strong>
+          Hold BOOT button while connecting USB.
+        </li>
 
-        <a class="tutorial-btn"
-           href="https://youtu.be/ENxouRuxUlE"
-           target="_blank">
-          ▶ Watch Tutorial
-        </a>
-      </div>
+        <li>
+          <strong>Manifest download failed:</strong>
+          Verify manifest.json path and GitHub Pages deployment.
+        </li>
 
-      <div class="card">
-        <h3>Troubleshooting</h3>
+        <li>
+          <strong>404 firmware error:</strong>
+          Confirm BIN files are uploaded correctly.
+        </li>
 
-        <ul>
-          <li>Use a data USB cable</li>
-          <li>Close Serial Monitor before flashing</li>
-          <li>Try another USB port</li>
-          <li>Hold BOOT while connecting if needed</li>
-          <li>Install USB drivers if board is not detected</li>
-        </ul>
-      </div>
+        <li>
+          <strong>Serial port busy:</strong>
+          Close other applications using COM port.
+        </li>
+      </ul>
+    </section>
 
+    <section class="card">
+      <h2>Browser Compatibility</h2>
+
+      <ul>
+        <li>Google Chrome (Recommended)</li>
+        <li>Microsoft Edge</li>
+        <li>Opera</li>
+        <li>Chromium-based browsers</li>
+      </ul>
+
+      <p style="margin-top: 12px;">
+        Firefox and Safari currently do not fully support Web Serial API.
+      </p>
     </section>
 
     <footer>
-      © 2026 TECHIESMS • Realtime GPS Tracker Firmware Portal
+      Built for Realtime GPS Tracker • techiesms
     </footer>
 
   </div>
